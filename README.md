@@ -6,4 +6,7 @@ and hackable code.
 
 This version is likely not of interest - just configuring it for my home and calendar.
 
+## Plans
+
+* Read calendars from Android - this will let me display my shared calendars
 
