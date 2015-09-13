@@ -21,7 +21,8 @@ import com.morristaedt.mirror.requests.YahooStockResponse;
 import com.morristaedt.mirror.utils.WeekUtil;
 import com.squareup.picasso.Picasso;
 
-public class MirrorActivity extends ActionBarActivity {
+public class MirrorActivity extends ActionBarActivity
+{
 
     private static final boolean DEMO_MODE = false;
 
@@ -32,51 +33,67 @@ public class MirrorActivity extends ActionBarActivity {
     private TextView mBikeTodayText;
     private TextView mStockText;
     private View mWaterPlants;
+    private View mLibraryDay;
     private View mGroceryList;
     private ImageView mXKCDImage;
 
-    private XKCDModule.XKCDListener mXKCDListener = new XKCDModule.XKCDListener() {
+    private XKCDModule.XKCDListener mXKCDListener = new XKCDModule.XKCDListener()
+    {
         @Override
-        public void onNewXKCDToday(String url) {
-            if (TextUtils.isEmpty(url)) {
+        public void onNewXKCDToday(String url)
+        {
+            if (TextUtils.isEmpty(url))
+            {
                 mXKCDImage.setVisibility(View.GONE);
-            } else {
+            }
+            else
+            {
                 Picasso.with(MirrorActivity.this).load(url).into(mXKCDImage);
                 mXKCDImage.setVisibility(View.VISIBLE);
             }
         }
     };
 
-    private YahooFinanceModule.StockListener mStockListener = new YahooFinanceModule.StockListener() {
+    private YahooFinanceModule.StockListener mStockListener = new YahooFinanceModule.StockListener()
+    {
         @Override
-        public void onNewStockPrice(YahooStockResponse.YahooQuoteResponse quoteResponse) {
-            if (quoteResponse == null) {
+        public void onNewStockPrice(YahooStockResponse.YahooQuoteResponse quoteResponse)
+        {
+            if (quoteResponse == null)
+            {
                 mStockText.setVisibility(View.GONE);
-            } else {
+            }
+            else
+            {
                 mStockText.setVisibility(View.VISIBLE);
                 mStockText.setText("$" + quoteResponse.symbol + " $" + quoteResponse.LastTradePriceOnly);
             }
         }
     };
 
-    private ForecastModule.ForecastListener mForecastListener = new ForecastModule.ForecastListener() {
+    private ForecastModule.ForecastListener mForecastListener = new ForecastModule.ForecastListener()
+    {
         @Override
-        public void onWeatherToday(String weatherToday) {
-            if (!TextUtils.isEmpty(weatherToday)) {
+        public void onWeatherToday(String weatherToday)
+        {
+            if (!TextUtils.isEmpty(weatherToday))
+            {
                 mWeatherSummary.setVisibility(View.VISIBLE);
                 mWeatherSummary.setText(weatherToday);
             }
         }
 
         @Override
-        public void onShouldBike(boolean showToday, boolean shouldBike) {
+        public void onShouldBike(boolean showToday, boolean shouldBike)
+        {
             mBikeTodayText.setVisibility(showToday ? View.VISIBLE : View.GONE);
             mBikeTodayText.setText(shouldBike ? R.string.bike_today : R.string.no_bike_today);
         }
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -96,6 +113,7 @@ public class MirrorActivity extends ActionBarActivity {
         mHelloText = (TextView) findViewById(R.id.hello_text);
         mWaterPlants = findViewById(R.id.water_plants);
         mGroceryList = findViewById(R.id.grocery_list);
+        mLibraryDay = findViewById(R.id.library_day);
         mBikeTodayText = (TextView) findViewById(R.id.can_bike);
         mStockText = (TextView) findViewById(R.id.stock_text);
         mXKCDImage = (ImageView) findViewById(R.id.xkcd_image);
@@ -114,16 +132,21 @@ public class MirrorActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(Intent intent)
+    {
         super.onNewIntent(intent);
         setViewState();
     }
 
-    private void setViewState() {
+    private void setViewState()
+    {
         String birthday = BirthdayModule.getBirthday();
-        if (TextUtils.isEmpty(birthday)) {
+        if (TextUtils.isEmpty(birthday))
+        {
             mBirthdayText.setVisibility(View.GONE);
-        } else {
+        }
+        else
+        {
             mBirthdayText.setVisibility(View.VISIBLE);
             mBirthdayText.setText(getString(R.string.happy_birthday, birthday));
         }
@@ -131,21 +154,29 @@ public class MirrorActivity extends ActionBarActivity {
         mDayText.setText(DayModule.getDay());
 //        mHelloText.setText(TimeModule.getTimeOfDayWelcome(getResources())); // not in current design
 
-        mWaterPlants.setVisibility(ChoresModule.waterPlantsToday() ? View.VISIBLE : View.GONE);
-        mGroceryList.setVisibility(ChoresModule.makeGroceryListToday() ? View.VISIBLE : View.GONE);
+//        mWaterPlants.setVisibility(ChoresModule.waterPlantsToday() ? View.VISIBLE : View.GONE);
+        mWaterPlants.setVisibility(View.GONE);
+        mLibraryDay.setVisibility((ChoresModule.libraryToday()? View.VISIBLE : View.GONE));
+        mGroceryList.setVisibility(ChoresModule.marketToday() ? View.VISIBLE : View.GONE);
 
-        ForecastModule.getHourlyForecast(getResources(), 40.681045, -73.9931749, mForecastListener);
+        // TODO Move lat/long to query OS
+        ForecastModule.getHourlyForecast(getResources(), 32.858805, -117.198556, mForecastListener);
         XKCDModule.getXKCDForToday(mXKCDListener);
 
-        if (WeekUtil.isWeekday() && WeekUtil.afterFive()) {
-            YahooFinanceModule.getStockForToday("ETSY", mStockListener);
-        } else {
+        if (WeekUtil.isWeekday() && WeekUtil.afterFive())
+        {
+            YahooFinanceModule.getStockForToday(getString(R.string.StockSymbol), mStockListener);
+        }
+        else
+        {
             mStockText.setVisibility(View.GONE);
         }
     }
 
-    private void showDemoMode() {
-        if (DEMO_MODE) {
+    private void showDemoMode()
+    {
+        if (DEMO_MODE)
+        {
             mBikeTodayText.setVisibility(View.VISIBLE);
             mStockText.setVisibility(View.VISIBLE);
             mWaterPlants.setVisibility(View.VISIBLE);

@@ -19,24 +19,31 @@ import retrofit.RetrofitError;
 /**
  * Created by HannahMitt on 8/22/15.
  */
-public class ForecastModule {
+public class ForecastModule
+{
 
-    public interface ForecastListener {
+    public interface ForecastListener
+    {
         void onWeatherToday(String weatherToday);
 
         void onShouldBike(boolean showToday, boolean shouldBike);
     }
 
-    public static void getHourlyForecast(final Resources resources, final double lat, final double lon, final ForecastListener listener) {
-        new AsyncTask<Void, Void, ForecastResponse>() {
+    public static void getHourlyForecast(final Resources resources, final double lat, final double lon, final ForecastListener listener)
+    {
+        new AsyncTask<Void, Void, ForecastResponse>()
+        {
 
             @Override
-            protected ForecastResponse doInBackground(Void... params) {
+            protected ForecastResponse doInBackground(Void... params)
+            {
                 RestAdapter restAdapter = new RestAdapter.Builder()
                         .setEndpoint("https://api.forecast.io")
-                        .setErrorHandler(new ErrorHandler() {
+                        .setErrorHandler(new ErrorHandler()
+                        {
                             @Override
-                            public Throwable handleError(RetrofitError cause) {
+                            public Throwable handleError(RetrofitError cause)
+                            {
                                 Log.w("mirror", "Forecast error: " + cause);
                                 return null;
                             }
@@ -51,36 +58,50 @@ public class ForecastModule {
             }
 
             @Override
-            protected void onPostExecute(ForecastResponse forecastResponse) {
-                if (forecastResponse != null) {
-                    if (forecastResponse.currently != null) {
+            protected void onPostExecute(ForecastResponse forecastResponse)
+            {
+                if (forecastResponse != null)
+                {
+                    if (forecastResponse.currently != null)
+                    {
                         listener.onWeatherToday(forecastResponse.currently.getDisplayTemperature() + " " + forecastResponse.currently.summary);
                     }
 
-                    if (WeekUtil.isWeekday() && !WeekUtil.afterFive() && forecastResponse.hourly != null && forecastResponse.hourly.data != null) {
+                    if (WeekUtil.isWeekday() && !WeekUtil.afterFive() && forecastResponse.hourly != null && forecastResponse.hourly.data != null)
+                    {
                         listener.onShouldBike(true, shouldBikeToday(forecastResponse.hourly.data));
-                    } else {
+                    }
+                    else
+                    {
                         listener.onShouldBike(false, true);
                     }
                 }
             }
 
-            private boolean shouldBikeToday(List<ForecastResponse.Hour> hours) {
+            private boolean shouldBikeToday(List<ForecastResponse.Hour> hours)
+            {
                 int dayOfMonthToday = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
-                for (ForecastResponse.Hour hour : hours) {
+                for (ForecastResponse.Hour hour : hours)
+                {
                     Calendar hourCalendar = hour.getCalendar();
 
                     // Only check hourly forecast for today
-                    if (hourCalendar.get(Calendar.DAY_OF_MONTH) == dayOfMonthToday) {
+                    if (hourCalendar.get(Calendar.DAY_OF_MONTH) == dayOfMonthToday)
+                    {
                         int hourOfDay = hourCalendar.get(Calendar.HOUR_OF_DAY);
                         Log.i("mirror", "Hour of day is " + hourOfDay + " with precipProb " + hour.precipProbability);
-                        if (hourOfDay >= 7 && hourOfDay <= 11) {
-                            if (hour.precipProbability >= 0.3) {
+                        if (hourOfDay >= 7 && hourOfDay <= 11)
+                        {
+                            if (hour.precipProbability >= 0.3)
+                            {
                                 return false;
                             }
-                        } else if (hourOfDay >= 17 && hourOfDay <= 19) {
-                            if (hour.precipProbability >= 0.3) {
+                        }
+                        else if (hourOfDay >= 17 && hourOfDay <= 19)
+                        {
+                            if (hour.precipProbability >= 0.3)
+                            {
                                 return false;
                             }
                         }

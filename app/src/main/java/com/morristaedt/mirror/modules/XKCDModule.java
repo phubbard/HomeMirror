@@ -16,9 +16,11 @@ import retrofit.RetrofitError;
 /**
  * Created by HannahMitt on 8/22/15.
  */
-public class XKCDModule {
+public class XKCDModule
+{
 
-    public interface XKCDListener {
+    public interface XKCDListener
+    {
         void onNewXKCDToday(String url);
     }
 
@@ -27,16 +29,21 @@ public class XKCDModule {
      *
      * @param listener
      */
-    public static void getXKCDForToday(final XKCDListener listener) {
-        new AsyncTask<Void, Void, XKCDResponse>() {
+    public static void getXKCDForToday(final XKCDListener listener)
+    {
+        new AsyncTask<Void, Void, XKCDResponse>()
+        {
 
             @Override
-            protected XKCDResponse doInBackground(Void... params) {
+            protected XKCDResponse doInBackground(Void... params)
+            {
                 RestAdapter restAdapter = new RestAdapter.Builder()
                         .setEndpoint("http://xkcd.com")
-                        .setErrorHandler(new ErrorHandler() {
+                        .setErrorHandler(new ErrorHandler()
+                        {
                             @Override
-                            public Throwable handleError(RetrofitError cause) {
+                            public Throwable handleError(RetrofitError cause)
+                            {
                                 Log.w("mirror", "XKCD error: " + cause);
                                 return null;
                             }
@@ -48,11 +55,15 @@ public class XKCDModule {
             }
 
             @Override
-            protected void onPostExecute(XKCDResponse xkcdResponse) {
+            protected void onPostExecute(XKCDResponse xkcdResponse)
+            {
                 Calendar today = Calendar.getInstance();
-                if (!TextUtils.isEmpty(xkcdResponse.img) && xkcdResponse.day == today.get(Calendar.DAY_OF_MONTH) && xkcdResponse.month == (today.get(Calendar.MONTH) + 1) && xkcdResponse.year == today.get(Calendar.YEAR)) {
+                if (!TextUtils.isEmpty(xkcdResponse.img) && xkcdResponse.day == today.get(Calendar.DAY_OF_MONTH) && xkcdResponse.month == (today.get(Calendar.MONTH) + 1) && xkcdResponse.year == today.get(Calendar.YEAR))
+                {
                     listener.onNewXKCDToday(xkcdResponse.img);
-                } else {
+                }
+                else
+                {
                     listener.onNewXKCDToday(null);
                 }
             }

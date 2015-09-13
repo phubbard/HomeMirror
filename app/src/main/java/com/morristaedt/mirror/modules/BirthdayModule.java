@@ -14,8 +14,10 @@ public class BirthdayModule {
 
     static {
         mBirthdayMap = new HashMap<>();
-        mBirthdayMap.put("01/17", "Hannah");
-        mBirthdayMap.put("05/8", "Andy");
+        mBirthdayMap.put("11/02", "Chris");
+        mBirthdayMap.put("02/02", "Paul");
+        mBirthdayMap.put("06/07", "Anna");
+        mBirthdayMap.put("07/09", "Margaret");
     }
 
     public static String getBirthday() {

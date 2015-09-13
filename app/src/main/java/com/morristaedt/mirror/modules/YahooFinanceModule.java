@@ -15,9 +15,11 @@ import retrofit.RetrofitError;
 /**
  * Created by HannahMitt on 8/22/15.
  */
-public class YahooFinanceModule {
+public class YahooFinanceModule
+{
 
-    public interface StockListener {
+    public interface StockListener
+    {
         void onNewStockPrice(YahooStockResponse.YahooQuoteResponse quoteResponse);
     }
 
@@ -26,17 +28,22 @@ public class YahooFinanceModule {
      *
      * @param listener
      */
-    public static void getStockForToday(final String stockName, final StockListener listener) {
+    public static void getStockForToday(final String stockName, final StockListener listener)
+    {
 
-        new AsyncTask<Void, Void, YahooStockResponse>() {
+        new AsyncTask<Void, Void, YahooStockResponse>()
+        {
 
             @Override
-            protected YahooStockResponse doInBackground(Void... params) {
+            protected YahooStockResponse doInBackground(Void... params)
+            {
                 RestAdapter restAdapter = new RestAdapter.Builder()
                         .setEndpoint("http://query.yahooapis.com/v1/public")
-                        .setErrorHandler(new ErrorHandler() {
+                        .setErrorHandler(new ErrorHandler()
+                        {
                             @Override
-                            public Throwable handleError(RetrofitError cause) {
+                            public Throwable handleError(RetrofitError cause)
+                            {
                                 Log.w("mirror", "Yahoo Finance error: " + cause);
                                 return cause;
                             }
@@ -52,10 +59,13 @@ public class YahooFinanceModule {
             }
 
             @Override
-            protected void onPostExecute(YahooStockResponse stockResponse) {
-                if (stockResponse != null && stockResponse.getQuoteResponse() != null) {
+            protected void onPostExecute(YahooStockResponse stockResponse)
+            {
+                if (stockResponse != null && stockResponse.getQuoteResponse() != null)
+                {
                     YahooStockResponse.YahooQuoteResponse quoteResponse = stockResponse.getQuoteResponse();
-                    if (quoteResponse.getPercentageChange().abs().compareTo(BigDecimal.valueOf(0.05)) >= 0) {
+                    if (quoteResponse.getPercentageChange().abs().compareTo(BigDecimal.valueOf(0.05)) >= 0)
+                    {
                         listener.onNewStockPrice(quoteResponse);
                         return;
                     }

@@ -12,12 +12,14 @@ import com.morristaedt.mirror.receiver.AlarmReceiver;
 /**
  * Created by HannahMitt on 8/22/15.
  */
-public class MirrorApplication extends Application {
+public class MirrorApplication extends Application
+{
 
     private static final long MINUTES_10 = 10 * 60 * 1000;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
         AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
