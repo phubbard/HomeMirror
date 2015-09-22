@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.morristaedt.mirror.modules.BirthdayModule;
 import com.morristaedt.mirror.modules.ChoresModule;
 import com.morristaedt.mirror.modules.DayModule;
+import com.morristaedt.mirror.modules.CalendarModule;
 import com.morristaedt.mirror.modules.ForecastModule;
 import com.morristaedt.mirror.modules.XKCDModule;
 import com.morristaedt.mirror.modules.YahooFinanceModule;
@@ -36,6 +37,8 @@ public class MirrorActivity extends ActionBarActivity
     private View mLibraryDay;
     private View mGroceryList;
     private ImageView mXKCDImage;
+    private TextView mCalendarTitleText;
+    private TextView mCalendarDetailsText;
 
     private XKCDModule.XKCDListener mXKCDListener = new XKCDModule.XKCDListener()
     {
@@ -53,6 +56,20 @@ public class MirrorActivity extends ActionBarActivity
             }
         }
     };
+
+    private CalendarModule.CalendarListener mCalendarListener = new CalendarModule.CalendarListener() {
+               @Override
+               public void onCalendarUpdate(String title, String details) {
+                       mCalendarTitleText.setVisibility(title != null ? View.VISIBLE : View.GONE);
+                       mCalendarTitleText.setText(title);
+                       mCalendarDetailsText.setVisibility(details != null ? View.VISIBLE : View.GONE);
+                       mCalendarDetailsText.setText(details);
+
+                               //Make marquee effect work for long text
+                                       mCalendarTitleText.setSelected(true);
+                       mCalendarDetailsText.setSelected(true);
+                   }
+           };
 
     private YahooFinanceModule.StockListener mStockListener = new YahooFinanceModule.StockListener()
     {
@@ -117,6 +134,8 @@ public class MirrorActivity extends ActionBarActivity
         mBikeTodayText = (TextView) findViewById(R.id.can_bike);
         mStockText = (TextView) findViewById(R.id.stock_text);
         mXKCDImage = (ImageView) findViewById(R.id.xkcd_image);
+        mCalendarTitleText = (TextView) findViewById(R.id.calendar_title);
+        mCalendarDetailsText = (TextView) findViewById(R.id.calendar_details);
 
         //Negative of XKCD image
         float[] colorMatrixNegative = {
@@ -162,6 +181,8 @@ public class MirrorActivity extends ActionBarActivity
         // TODO Move lat/long to query OS
         ForecastModule.getHourlyForecast(getResources(), 32.858805, -117.198556, mForecastListener);
         XKCDModule.getXKCDForToday(mXKCDListener);
+        CalendarModule.getCalendarEvents(this, mCalendarListener);
+
 
         if (WeekUtil.isWeekday() && WeekUtil.afterFive())
         {
